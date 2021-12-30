@@ -7,32 +7,28 @@ package me.wawwior.core;
 
 import me.wawwior.config.ConfigProvider;
 import me.wawwior.core.command.CommandRegistry;
+import me.wawwior.core.core.CorePlugin;
+import me.wawwior.core.event.ResourceEventHandler;
+import me.wawwior.core.pack.PackLoader;
 import net.forthecrown.royalgrenadier.RoyalGrenadier;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Logger;
-
-public final class Core extends JavaPlugin {
+public final class Core extends CorePlugin {
 
     public static Core CORE;
-    public static Logger LOGGER = Bukkit.getLogger();
-
-    public static ConfigProvider CONFIGPROVIDER;
-
-    public static String version = "1.0-DEV";
-
 
     @Override
-    public void onEnable() {
+    protected void load() {
+        CORE = this;
+
+        PackLoader.start();
 
         RoyalGrenadier.initialize();
 
-        CONFIGPROVIDER = getDefaultProvider(this);
+        Bukkit.getPluginManager().registerEvents(new ResourceEventHandler(), this);
 
-        CORE = this;
-
-        LOGGER.info(
+        getLogger().info(
                 "\n\u001b[36;1m \n" +
                         " #####  #####  ####   #####\n" +
                         " ##     ## ##  #####  #####\n" +
@@ -40,27 +36,10 @@ public final class Core extends JavaPlugin {
                         "\n" +
                         " - Wawwior's Backend Core\n"
         );
-
-        CommandRegistry.registerDefaults();
-
-        CONFIGPROVIDER.load();
-
     }
 
     @Override
-    public void onDisable() {
-        CONFIGPROVIDER.save();
-    }
-
-    public static ConfigProvider getDefaultProvider(JavaPlugin plugin) {
-        return new ConfigProvider("./plugins/" + plugin.getName());
-    }
-
-    public static void enable(String name) {
-
-    }
-
-    public static void disable(String name) {
-
+    protected void disable() {
+        PackLoader.stop();
     }
 }

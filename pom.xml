@@ -6,7 +6,7 @@
 
     <groupId>me.wawwior</groupId>
     <artifactId>Core</artifactId>
-    <version>1.1</version>
+    <version>1.2-DEV</version>
     <packaging>jar</packaging>
 
     <name>Core</name>
@@ -115,6 +115,17 @@
             <groupId>com.mojang</groupId>
             <artifactId>brigadier</artifactId>
             <version>1.0.18</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>4.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.14</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>me.wawwior</groupId>

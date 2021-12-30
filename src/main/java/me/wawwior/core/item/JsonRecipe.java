@@ -1,7 +1,11 @@
-package me.wawwior.core.util;
+/*
+ * Copyright (c) 2021. Wawwior
+ * All Rights Reserved.
+ */
+
+package me.wawwior.core.item;
 
 import com.google.gson.Gson;
-import me.wawwior.core.Core;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +41,7 @@ public class JsonRecipe {
 
     @Override
     public String toString() {
-        return "me.wawwior.core.util.JsonRecipe{" +
+        return "me.wawwior.core.item.JsonRecipe{" +
                 "type='" + type + '\'' +
                 ", pattern=" + Arrays.toString(pattern) +
                 ", key=" + key +
