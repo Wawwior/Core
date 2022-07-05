@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2021. Wawwior
- * All Rights Reserved.
- */
-
 package me.wawwior.core.item;
 
 import me.wawwior.core.core.CorePlugin;

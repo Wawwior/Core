@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2021. Wawwior
- * All Rights Reserved.
- */
-
 package me.wawwior.core.item;
 
 import com.google.gson.Gson;
@@ -78,7 +73,7 @@ public class JsonRecipe {
             key.forEach((c, i) -> {
                 recipe.setIngredient(c, Objects.requireNonNull(Material.getMaterial(i.item.replace("minecraft:", "").toUpperCase())));
             });
-
+            
             return (T) recipe;
 
         } else if (type.equalsIgnoreCase("minecraft:crafting_shapeless")) {

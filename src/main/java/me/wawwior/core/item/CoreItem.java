@@ -1,14 +1,11 @@
-/*
- * Copyright (c) 2021. Wawwior
- * All Rights Reserved.
- */
-
 package me.wawwior.core.item;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Objects;
 
 public class CoreItem {
 
@@ -30,7 +27,7 @@ public class CoreItem {
     public boolean equals(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         try {
-            return meta.getPersistentDataContainer().get(idKey, PersistentDataType.STRING).equalsIgnoreCase(id);
+            return Objects.requireNonNull(meta.getPersistentDataContainer().get(idKey, PersistentDataType.STRING)).equalsIgnoreCase(id);
         } catch (NullPointerException e) {
             return false;
         }

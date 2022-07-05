@@ -1,21 +1,26 @@
-/*
- * Copyright (c) 2021. Wawwior
- * All Rights Reserved.
- */
-
 package me.wawwior.core.command;
 
-import net.forthecrown.grenadier.command.AbstractCommand;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.commands.CommandSourceStack;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommandRegistry {
-
-    private static final ArrayList<AbstractCommand> commands = new ArrayList<>();
-
-    public static void register(AbstractCommand command) {
-        if (commands.stream().noneMatch(c -> c.getName().equalsIgnoreCase(command.getName()))) {
-            commands.add(command);
-        }
-    }
+	
+	CommandDispatcher<CommandSourceStack> dispatcher;
+	
+	Map<String, AbstractCommand> commands = new HashMap<>();
+	
+	public CommandRegistry() {
+		this.dispatcher = new CommandDispatcher<>();
+	}
+	
+	public void register(AbstractCommand command) {
+		commands.putIfAbsent(command.getId(), command);
+		Bukkit.getServer().getCommandMap().register(command.getId(), command);
+		command.register(dispatcher);
+	}
 }

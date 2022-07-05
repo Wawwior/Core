@@ -1,45 +1,70 @@
-/*
- * Copyright (c) 2021. Wawwior
- * All Rights Reserved.
- */
-
 package me.wawwior.core;
 
-import me.wawwior.config.ConfigProvider;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.lucko.commodore.Commodore;
+import me.lucko.commodore.CommodoreProvider;
+import me.wawwior.core.command.AbstractCommand;
 import me.wawwior.core.command.CommandRegistry;
 import me.wawwior.core.core.CorePlugin;
-import me.wawwior.core.event.ResourceEventHandler;
-import me.wawwior.core.pack.PackLoader;
-import net.forthecrown.royalgrenadier.RoyalGrenadier;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.minecraft.commands.CommandSourceStack;
+import org.bukkit.command.CommandSender;
 
 public final class Core extends CorePlugin {
 
     public static Core CORE;
+    
+    private final CommandRegistry commandRegistry = new CommandRegistry();
 
+    private Commodore commodore;
+    
     @Override
     protected void load() {
         CORE = this;
-
-        PackLoader.start();
-
-        RoyalGrenadier.initialize();
-
-        Bukkit.getPluginManager().registerEvents(new ResourceEventHandler(), this);
-
+        
         getLogger().info(
-                "\n\u001b[36;1m \n" +
-                        " #####  #####  ####   #####\n" +
-                        " ##     ## ##  #####  #####\n" +
-                        " #####  #####  ##  #  #####\n" +
-                        "\n" +
-                        " - Wawwior's Backend Core\n"
+                """
+                        
+                        \u001b[36;1m\s
+                         #####  #####  ####   #####
+                         ##     ## ##  #####  #####
+                         #####  #####  ##  #  #####
+
+                         - Wawwior's Backend Core\u001b[0m\s
+                        """
         );
     }
-
+    
     @Override
-    protected void disable() {
-        PackLoader.stop();
+    protected void enable() {
+    
+        commodore = CommodoreProvider.getCommodore(this);
+        commandRegistry.register(new AbstractCommand("core") {
+            @Override
+            public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
+                builder
+                        .executes(context -> {
+                            context.getSource().getBukkitSender().sendMessage(
+                                    Component
+                                            .text("Running core version " + version())
+                                            .color(NamedTextColor.GRAY)
+                                            .decorate(TextDecoration.ITALIC)
+                            );
+                            return 1;
+                        });
+            }
+        });
+        
+    }
+    
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+    
+    public Commodore getCommodore() {
+        return commodore;
     }
 }
