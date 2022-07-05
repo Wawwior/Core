@@ -52,7 +52,7 @@ public abstract class AbstractCommand extends BukkitCommand {
 		
 		StringBuilder builder = new StringBuilder(label.split(":")[label.split(":").length - 1]);
 		
-		for (String arg: args) {
+		for (String arg : args) {
 			builder.append(" ").append(arg);
 		}
 		

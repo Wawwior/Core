@@ -3,7 +3,6 @@ package me.wawwior.core.command;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
 import java.util.Map;
