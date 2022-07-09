@@ -6,7 +6,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.wawwior.core.Core;
+import me.lucko.commodore.Commodore;
 import net.minecraft.commands.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -16,31 +16,40 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AbstractCommand extends BukkitCommand {
 	
 	private final String id;
-	private CommandDispatcher<CommandSourceStack> dispatcher;
+	private final CommandRegistry registry;
+	private final Commodore commodore;
 	
-	public AbstractCommand(String id) {
+	AbstractCommand(String id, CommandRegistry registry, Commodore commodore) {
 		super(id);
 		this.id = id;
+		this.registry = registry;
+		this.commodore = commodore;
 	}
 	
 	public abstract void build(LiteralArgumentBuilder<CommandSourceStack> builder);
 	
-	public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		this.dispatcher = dispatcher;
+	public void register() {
 		
-		LiteralArgumentBuilder<CommandSourceStack> builder = LiteralArgumentBuilder.literal(id);
+		if (registry.register(this)) {
+			
+			LiteralArgumentBuilder<CommandSourceStack> builder = LiteralArgumentBuilder.literal(id);
+			build(builder);
+			
+			CommandDispatcher<CommandSourceStack> dispatcher = registry.dispatcher;
+			dispatcher.register(builder);
+			
+			commodore.register(this, builder);
 		
-		build(builder);
-		
-		Core.CORE.getCommodore().register(builder);
-		
-		dispatcher.register(builder);
-		
+		}
 		
 	}
 	
 	public void handleException(CommandSyntaxException e) {
 		e.printStackTrace();
+	}
+	
+	public String prefix() {
+		return id;
 	}
 	
 	public String getId() {
@@ -49,6 +58,8 @@ public abstract class AbstractCommand extends BukkitCommand {
 	
 	@Override
 	public final boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
+		
+		CommandDispatcher<CommandSourceStack> dispatcher = registry.dispatcher;
 		
 		StringBuilder builder = new StringBuilder(label.split(":")[label.split(":").length - 1]);
 		
@@ -65,15 +76,5 @@ public abstract class AbstractCommand extends BukkitCommand {
 		}
 		
 		return false;
-	}
-	
-	//Utility methods
-	
-	protected LiteralArgumentBuilder<CommandSourceStack> literal(String id) {
-		return LiteralArgumentBuilder.literal(id);
-	}
-	
-	protected <T> RequiredArgumentBuilder<CommandSourceStack, T> argument(String id, ArgumentType<T> type) {
-		return RequiredArgumentBuilder.argument(id, type);
 	}
 }

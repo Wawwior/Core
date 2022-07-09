@@ -17,9 +17,17 @@ public class CommandRegistry {
 		this.dispatcher = new CommandDispatcher<>();
 	}
 	
-	public void register(AbstractCommand command) {
+	boolean register(AbstractCommand command) {
+		
+		if (commands.containsKey(command.getId())) {
+			throw new IllegalArgumentException("Command with id " + command.getId() + " already registered");
+		}
+		
 		commands.putIfAbsent(command.getId(), command);
-		Bukkit.getServer().getCommandMap().register(command.getId(), command);
-		command.register(dispatcher);
+		
+		Bukkit.getServer().getCommandMap().register(command.prefix(), command);
+		
+		
+		return true;
 	}
 }
