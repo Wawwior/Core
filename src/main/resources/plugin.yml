@@ -1,0 +1,13 @@
+name: Core
+version: ${project.version}
+main: me.wawwior.core.Core
+api-version: 1.19
+authors: [ Wawwior ]
+description: wawwior.me Core Plugin
+website: https://wawwior.me/plugins/core
+
+libraries: [
+  "io.vertx:vertx-core:4.2.6",
+  "org.zeroturnaround:zt-zip:1.15",
+  "com.mojang:brigadier:1.0.18"
+]

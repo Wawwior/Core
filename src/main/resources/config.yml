@@ -1,0 +1,5 @@
+#Automatic Resource Distribution
+resources:
+
+  #Port used to send resources to player
+  port: 7777
