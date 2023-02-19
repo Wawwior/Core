@@ -10,7 +10,6 @@ public class PluginUtil {
 	}
 	
 	public void enable(JavaPlugin plugin) {
-		
 		Bukkit.getPluginManager().enablePlugin(plugin);
 	}
 	

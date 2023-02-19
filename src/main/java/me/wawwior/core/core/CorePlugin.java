@@ -6,6 +6,7 @@ import me.wawwior.config.IConfig;
 import me.wawwior.config.io.AdapterInfo;
 import me.wawwior.config.io.impl.FileInfo;
 import me.wawwior.config.io.impl.JsonFileAdapter;
+import me.wawwior.core.command.CommandFactory;
 import me.wawwior.core.item.ItemFactory;
 import me.wawwior.core.util.ResourceUtil;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,21 +16,25 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CorePlugin extends JavaPlugin {
+public abstract class CorePlugin extends JavaPlugin {
 	
 	protected ConfigProvider<FileInfo> configProvider = new ConfigProvider<>(new JsonFileAdapter("./plugins/" + this.getName()), false);
 	
 	protected List<Configurable<? extends IConfig, ? extends AdapterInfo>> configurables = new ArrayList<>();
 	
 	protected ItemFactory itemFactory = new ItemFactory(this);
-	
+
+    protected CommandFactory commandFactory;
+
 	protected ResourceUtil resourceUtil = new ResourceUtil(this);
 	
 	@Override
 	public final void onEnable() {
-		
-		load();
-		
+
+        commandFactory = new CommandFactory(this);
+
+        load();
+
 		saveDefaultConfig();
 		
 		configurables.forEach(Configurable::load);
@@ -52,9 +57,7 @@ public class CorePlugin extends JavaPlugin {
 	protected void disable() {
 	}
 	
-	public String version() {
-		return "1.3.7-DEV";
-	}
+	public abstract String version();
 	
 	public ConfigProvider<FileInfo> getConfigProvider() {
 		return configProvider;

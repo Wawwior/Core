@@ -4,29 +4,37 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import me.lucko.commodore.Commodore;
+import me.lucko.commodore.CommodoreProvider;
+import me.wawwior.core.core.CorePlugin;
+import me.wawwior.core.util.NameUtil;
 import net.minecraft.commands.CommandSourceStack;
-import org.bukkit.command.Command;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class CommandFactory {
-	
-	private final Supplier<CommandRegistry> registrySupplier;
-	private final Supplier<Commodore> commodoreSupplier;
-	
-	public CommandFactory(Supplier<CommandRegistry> registrySupplier, Supplier<Commodore> commodoreSupplier) {
-		this.registrySupplier = registrySupplier;
-		this.commodoreSupplier = commodoreSupplier;
-	}
+
+    private final CommandRegistry commandRegistry = new CommandRegistry();
+
+    private final Commodore commodore;
+    private final CorePlugin plugin;
+
+    public CommandFactory(CorePlugin plugin) {
+        this.commodore = CommodoreProvider.getCommodore(plugin);
+        this.plugin = plugin;
+    }
 	
 	public AbstractCommand create(String id, Consumer<LiteralArgumentBuilder<CommandSourceStack>> consumer) {
-		return new AbstractCommand(id, registrySupplier.get(), commodoreSupplier.get()) {
+		return new AbstractCommand(id, commandRegistry, commodore) {
 			@Override
 			public void build(LiteralArgumentBuilder<CommandSourceStack> builder) {
 				consumer.accept(builder);
 			}
-		};
+
+            @Override
+            public String prefix() {
+                return NameUtil.identifier(plugin.getName());
+            }
+        };
 	}
 	
 	public static LiteralArgumentBuilder<CommandSourceStack> literal(String id) {

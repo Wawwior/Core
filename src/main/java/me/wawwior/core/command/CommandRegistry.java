@@ -27,7 +27,6 @@ public class CommandRegistry {
 		
 		Bukkit.getServer().getCommandMap().register(command.prefix(), command);
 		
-		
 		return true;
 	}
 }

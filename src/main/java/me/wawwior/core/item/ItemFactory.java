@@ -4,6 +4,8 @@ import me.wawwior.core.core.CorePlugin;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
+import static me.wawwior.core.util.NameUtil.identifier;
+
 public class ItemFactory {
 	
 	CorePlugin plugin;
@@ -15,12 +17,7 @@ public class ItemFactory {
 		idKey = new NamespacedKey(plugin, "id");
 	}
 	
-	public CoreItem make(String id, ItemStack itemStack) {
-		return new CoreItem(identifier(id), itemStack, idKey);
+	public CoreItem make(String name, ItemStack itemStack) {
+		return new CoreItem(identifier(name), itemStack, idKey);
 	}
-	
-	private String identifier(String name) {
-		return name.replaceAll("[^a-z]", "_");
-	}
-	
 }

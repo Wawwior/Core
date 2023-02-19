@@ -8,7 +8,7 @@ import me.lucko.commodore.Commodore;
 import net.minecraft.commands.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.craftbukkit.v1_19_R1.command.VanillaCommandWrapper;
+import org.bukkit.craftbukkit.v1_19_R2.command.VanillaCommandWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCommand extends BukkitCommand {
@@ -32,11 +32,15 @@ public abstract class AbstractCommand extends BukkitCommand {
 			
 			LiteralArgumentBuilder<CommandSourceStack> builder = LiteralArgumentBuilder.literal(id);
 			build(builder);
-			
+
+            LiteralArgumentBuilder<CommandSourceStack> prefixedBuilder = LiteralArgumentBuilder.literal(prefix() + ":" + id);
+            build(prefixedBuilder);
+
 			CommandDispatcher<CommandSourceStack> dispatcher = registry.dispatcher;
 			dispatcher.register(builder);
-			
-			commodore.register(this, builder);
+
+			commodore.register(builder);
+            commodore.register(prefixedBuilder);
 		
 		}
 		

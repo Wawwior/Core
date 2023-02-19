@@ -2,26 +2,18 @@ package me.wawwior.core.util;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
+import java.io.*;
+import java.util.logging.Level;
 
 public class ResourceUtil {
 	
 	private String path;
-	private final String relPath;
-	
-	public ResourceUtil(JavaPlugin plugin) {
-		relPath = "./plugins/" + plugin.getName() + "/";
-		path = relPath;
-	}
-	
-	public ResourceUtil(String path) {
-		relPath = path;
-		this.path = path;
+    private final JavaPlugin plugin;
+
+
+    public ResourceUtil(JavaPlugin plugin) {
+        this.plugin = plugin;
+        path = "./plugins/" + plugin.getName() + "/";
 	}
 	
 	public ResourceUtil withPath(String path) {
@@ -29,27 +21,44 @@ public class ResourceUtil {
 		return this;
 	}
 	
-	// Copy sub-directory from current jar to work directory
-	
-	public void copyFromJar(String subDir, String toDir) throws URISyntaxException, IOException {
-		URI uri = Objects.requireNonNull(getClass().getClassLoader().getResource(subDir)).toURI();
-		Path source = Paths.get(uri);
-		Path target = Paths.get(path + toDir);
-		
-		
-		Files.walkFileTree(source, new SimpleFileVisitor<>() {
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				Files.copy(file, target.resolve(source.relativize(file.getParent())), StandardCopyOption.REPLACE_EXISTING);
-				return FileVisitResult.CONTINUE;
-			}
-			
-			@Override
-			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				Files.copy(dir, target.resolve(source.relativize(dir.getParent())), StandardCopyOption.REPLACE_EXISTING);
-				return FileVisitResult.CONTINUE;
-			}
-		});
-	}
+	// Copy subdirectory from current jar to work directory
+	public void copyFromJar(String dir, String toDir, boolean replace) {
+
+        if (dir == null || dir.equals("")) {
+            throw new IllegalArgumentException("dir cannot be null or empty");
+        }
+
+        dir = dir.replace('\\', '/');
+        InputStream in = plugin.getResource(dir);
+        if (in == null) {
+            throw new IllegalArgumentException("The embedded resource '" + dir + "' cannot be found in jar");
+        }
+
+        File outFile = new File(path, toDir);
+        int lastIndex = toDir.lastIndexOf('/');
+        File outDir = new File(path, toDir.substring(0, Math.max(lastIndex, 0)));
+
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+
+        try {
+            if (!outFile.exists() || replace) {
+                OutputStream out = new FileOutputStream(outFile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+                in.close();
+            } else {
+                plugin.getLogger().log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+            }
+        } catch (IOException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+        }
+
+    }
 	
 }

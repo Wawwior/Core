@@ -35,11 +35,11 @@ repositories {
 
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
+    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
     compileOnly("io.vertx:vertx-core:4.3.1")
     compileOnly("org.zeroturnaround:zt-zip:1.15")
     implementation("me.lucko:commodore:2.0")
-    implementation("me.wawwior:config:1.3.4")
+    implementation("me.wawwior:config:1.3.8")
 }
 
 publishing {
